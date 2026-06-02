@@ -86,7 +86,7 @@ export default function Workspace() {
   const [username, setUsername] = useState("@alwayspriyesh");
   
   const [theme, setTheme] = useState('ethereal');
-  const [aspect, setAspect] = useState('16:9'); // 16:9, 4:3, 1:1
+  const [aspect, setAspect] = useState('Auto'); // Auto, 16:9, 4:3, 1:1
   const [cardFont, setCardFont] = useState('sans');
   const [fontDropdownOpen, setFontDropdownOpen] = useState(false);
   
@@ -226,13 +226,12 @@ export default function Workspace() {
     setStreamingText("");
     setIsStreaming(false);
     setTheme('ethereal');
-    setAspect('16:9');
+    setAspect('Auto');
     setCardFont('sans');
     setAlign('left');
     setFontSize('medium');
     setOriginalDraftText("");
     setIsReviewingHumanize(false);
-    setEngagement("+42%");
     setAiMode(null);
     setErrorMsg(null);
     setIsAiApplied(false);
@@ -284,11 +283,12 @@ export default function Workspace() {
   };
 
   // Dynamic layout dimension bindings (Fully fluid and responsive for mobile)
-  // Card width is aspect-aware, but height is always content-driven (no forced aspect ratios)
+  // Card width and height are forced to match the selected aspect ratio exactly (including on mobile)
   const getAspectClass = () => {
-    if (aspect === '1:1') return 'w-full max-w-[390px]';
-    if (aspect === '16:9') return 'w-full max-w-full lg:max-w-[580px]';
-    return 'w-full max-w-[450px]'; // 4:3 standard
+    if (aspect === 'Auto') return 'w-full max-w-[450px] h-auto';
+    if (aspect === '1:1') return 'aspect-square w-full max-w-[390px]';
+    if (aspect === '16:9') return 'aspect-[16/9] w-full max-w-full lg:max-w-[580px]';
+    return 'aspect-[4/3] w-full max-w-[450px]'; // 4:3 standard
   };
 
   // Dynamically calculate grid columns based on active aspect ratio for auto-adjusting flexible relation
@@ -320,6 +320,11 @@ export default function Workspace() {
   // Dynamic body gap that scales with content
   const getBodyMargin = () => {
     const len = (activeContent?.body || text).length;
+    if (aspect === 'Auto') {
+      if (len < 100) return 'mt-1 sm:mt-1.5 mb-0';
+      if (len < 250) return 'mt-1.5 sm:mt-2 mb-0';
+      return 'mt-2 sm:mt-2.5 mb-0';
+    }
     if (len < 100) return 'my-2 sm:my-3.5';
     if (len < 250) return 'my-2.5 sm:my-4';
     return 'my-3 sm:my-5';
@@ -401,21 +406,21 @@ export default function Workspace() {
         >
           
           {/* Left Styling Actions Group - Compact grid layout on mobile, flex row on tablet/desktop */}
-          <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center gap-2.5 lg:gap-2 xl:gap-3.5 w-full lg:w-auto lg:h-full lg:pl-3.5 xl:pl-4">
+          <div className="grid grid-cols-[1.15fr_0.85fr] sm:flex sm:flex-row items-stretch sm:items-center gap-2 lg:gap-2 xl:gap-3.5 w-full lg:w-auto lg:h-full lg:pl-3.5 xl:pl-4">
             
             {/* Highly Visible Aspect Ratio Selector (Unified in Toolbar) */}
             <div 
               role="group" 
               aria-label="Canvas Aspect Ratio" 
-              className="flex items-center gap-1 bg-[#0C0C10] border border-white/15 rounded-lg p-1 h-11 sm:h-10 w-full sm:w-auto flex-shrink-0 justify-center col-span-1"
+              className="flex items-center gap-0.5 sm:gap-1 bg-[#0C0C10] border border-white/15 rounded-lg p-0.5 sm:p-1 h-11 sm:h-10 w-full sm:w-auto flex-shrink-0 justify-center col-span-1"
             >
-              {['16:9', '4:3', '1:1'].map((ratio) => (
+              {['Auto', '16:9', '4:3', '1:1'].map((ratio) => (
                 <button
                   key={ratio}
                   onClick={() => setAspect(ratio)}
                   aria-label={`Set aspect ratio to ${ratio}`}
                   aria-pressed={aspect === ratio}
-                  className={`interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 flex items-center justify-center px-2.5 sm:px-3.5 rounded-md font-mono text-xs sm:text-[10px] font-extrabold transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
+                  className={`interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 flex items-center justify-center px-1 sm:px-3 rounded-md font-mono text-[10px] sm:text-[10px] font-extrabold transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
                     aspect === ratio 
                       ? 'bg-white text-obsidian-bg font-extrabold shadow-lg' 
                       : 'text-obsidian-muted hover:text-white'
@@ -433,7 +438,7 @@ export default function Workspace() {
                 aria-label={`Select Typography Font, currently ${FONTS[cardFont].name}`}
                 aria-haspopup="listbox"
                 aria-expanded={fontDropdownOpen}
-                className="w-full h-11 sm:h-10 flex items-center justify-between px-3 bg-[#0C0C10] border border-white/15 rounded-lg text-white hover:border-[#E2C29B]/30 hover:bg-[#13131A] transition-all text-xs sm:text-[10px] font-extrabold shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
+                className="w-full h-11 sm:h-10 flex items-center justify-between px-2 sm:px-3 bg-[#0C0C10] border border-white/15 rounded-lg text-white hover:border-[#E2C29B]/30 hover:bg-[#13131A] transition-all text-[10px] sm:text-[10px] font-extrabold shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
               >
                 <span className="truncate text-obsidian-accent">{FONTS[cardFont].name}</span>
                 <ChevronDownIcon className="w-3.5 h-3.5 text-obsidian-muted transition-transform duration-200" style={{ transform: fontDropdownOpen ? 'rotate(180deg)' : 'none' }} />
@@ -771,7 +776,9 @@ export default function Workspace() {
               <div className="w-full flex items-center justify-center relative z-10">
                 <div 
                   ref={canvasRef}
-                  className={`w-full transition-all duration-500 ease-in-out flex flex-col justify-between ${getCardPadding()} rounded-2xl border ${currentTheme.cardBg} ${activeFontFamily} ${currentTheme.border} ${getAspectClass()} ${
+                  className={`w-full transition-all duration-500 ease-in-out flex flex-col ${
+                    aspect === 'Auto' ? 'justify-start gap-4' : 'justify-between'
+                  } ${getCardPadding()} rounded-2xl border ${currentTheme.cardBg} ${activeFontFamily} ${currentTheme.border} ${getAspectClass()} ${
                     isStreaming
                       ? aiMode === 'humanize'
                         ? 'border-[#E2C29B]/60 shadow-[0_0_40px_rgba(226,194,155,0.25)]'
@@ -799,7 +806,9 @@ export default function Workspace() {
                   </div>
 
                   {/* Card Body */}
-                  <div className={`flex-grow flex flex-col justify-center ${getBodyMargin()} ${align === 'center' ? 'text-center' : 'text-left'}`}>
+                  <div className={`${
+                    aspect === 'Auto' ? 'flex flex-col justify-start' : 'flex-grow flex flex-col justify-center'
+                  } ${getBodyMargin()} ${align === 'center' ? 'text-center' : 'text-left'}`}>
                     <div className="flex flex-col gap-3">
                       {activeContent.headline && (
                         <h3 className={`font-bold text-[15px] sm:text-[18.5px] leading-snug tracking-tight ${currentTheme.titleColor} ${isStreaming && aiMode !== 'humanize' ? 'animate-pulse' : ''}`}>
@@ -812,10 +821,12 @@ export default function Workspace() {
                     </div>
                   </div>
 
-                  {/* Single Elegant Spacer dot (Excess credits, AI indicators, and footer lines removed completely) */}
-                  <div className="flex justify-center items-center font-mono text-[10px] text-obsidian-muted/40 tracking-widest pt-2">
-                    <span>✦</span>
-                  </div>
+                  {/* Optional Bottom Spacer dot only for fixed aspect ratios to balance content */}
+                  {aspect !== 'Auto' && (
+                    <div className="flex justify-center items-center font-mono text-[10px] text-obsidian-muted/40 tracking-widest pt-2">
+                      <span>✦</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
