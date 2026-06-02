@@ -77,16 +77,16 @@ export default function ProductSections({ onFocusWorkspace }) {
                 </p>
               </div>
               <a
-                href="https://x.com/priyeshAI"
+                href="https://x.com/alwayspriyesh"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Follow the creator @priyeshAI on X"
+                aria-label="Follow the creator @alwayspriyesh on X"
                 className="interactive-scale flex items-center gap-2.5 h-10 px-5 bg-[#0C0C10] border border-[#E2C29B]/20 hover:border-[#E2C29B] bg-gradient-to-r from-obsidian-accentMuted to-white/[0.02] hover:brightness-110 text-obsidian-accent hover:text-white font-sans font-extrabold text-[10.5px] uppercase tracking-wider rounded-lg shadow-md shadow-[#E2C29B]/5 transition-all duration-300 shrink-0"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-                <span>Follow @priyeshAI</span>
+                <span>Follow @alwayspriyesh</span>
               </a>
             </motion.div>
           </motion.div>

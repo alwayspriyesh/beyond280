@@ -53,7 +53,7 @@ export default function App() {
           <div className="flex items-center gap-5 text-[10px]">
             <button onClick={handleFocusWorkspace} className="hover:text-white transition-colors duration-200">Open Studio</button>
             <span className="text-white/10">·</span>
-            <a href="https://x.com/priyeshAI" target="_blank" rel="noopener noreferrer" className="hover:text-obsidian-accent transition-colors duration-200">@priyeshAI</a>
+            <a href="https://x.com/alwayspriyesh" target="_blank" rel="noopener noreferrer" className="hover:text-obsidian-accent transition-colors duration-200">@alwayspriyesh</a>
           </div>
         </footer>
 
