@@ -51,10 +51,10 @@ export default function Header({ onFocusWorkspace }) {
 
         {/* Widescreen Dynamic Follow CTA */}
         <a
-          href="https://x.com/priyeshAI"
+          href="https://x.com/alwayspriyesh"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Follow @priyeshAI on X"
+          aria-label="Follow @alwayspriyesh on X"
           className="interactive-scale flex items-center gap-2 h-9 px-4.5 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-obsidian-bg font-sans font-extrabold text-[10.5px] uppercase tracking-wider rounded-lg shadow-md shadow-obsidian-accentMuted transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
         >
           <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

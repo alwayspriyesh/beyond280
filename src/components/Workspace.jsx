@@ -77,12 +77,13 @@ const FONTS = {
   mono: { name: 'JetBrains (Mono)', family: 'font-mono' }
 };
 
+
 const DEFAULT_TEXT = "Social content on X shouldn't be constrained by a simple character count. When you have deep, insights, condensing them into a raw tweet strips away their true authority.\n\nBeyond280 fixes this by instantly formatting, polishing, and packing your long thoughts into ultra-premium typographic cards that command visual space. Action breeds clarity.";
 
 export default function Workspace() {
   const [text, setText] = useState(DEFAULT_TEXT);
   const [headline, setHeadline] = useState("Scale Your Thoughts");
-  const [username, setUsername] = useState("@creator");
+  const [username, setUsername] = useState("@alwayspriyesh");
   
   const [theme, setTheme] = useState('ethereal');
   const [aspect, setAspect] = useState('16:9'); // 16:9, 4:3, 1:1
@@ -93,6 +94,7 @@ export default function Workspace() {
   const [fontSize, setFontSize] = useState('medium');
   const [originalDraftText, setOriginalDraftText] = useState("");
   const [isReviewingHumanize, setIsReviewingHumanize] = useState(false);
+
   
   // AI state controls
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -146,7 +148,7 @@ export default function Workspace() {
     setIsReviewingHumanize(true);
 
     try {
-      const result = await humanizeText(text, (chunk) => {
+      const result = await humanizeText(text, "Natural", (chunk) => {
         setStreamingText(chunk);
       });
       
@@ -187,7 +189,7 @@ export default function Workspace() {
     setAiMode('humanize');
     
     try {
-      const result = await humanizeText(textToHumanize, (chunk) => {
+      const result = await humanizeText(textToHumanize, "Natural", (chunk) => {
         setStreamingText(chunk);
       });
       
@@ -220,7 +222,7 @@ export default function Workspace() {
     setHeadline("Scale Your Thoughts");
     setAiHeadline("Scale Your Thoughts");
     setAiBody(DEFAULT_TEXT);
-    setUsername("@creator");
+    setUsername("@alwayspriyesh");
     setStreamingText("");
     setIsStreaming(false);
     setTheme('ethereal');
@@ -242,7 +244,22 @@ export default function Workspace() {
     setIsExporting(true);
 
     try {
+      // Force blur any active input element to collapse the mobile virtual keyboard and avoid layout-shift/keyboard transitions during capture
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+
+      // Allow sufficient delay (350ms) for virtual keyboard animation & layout resizing to fully finish
+      await new Promise((resolve) => setTimeout(resolve, 350));
       await document.fonts.ready;
+
+      // Double-call workaround for mobile browsers (specifically iOS Safari/Chrome) to pre-render/cache fonts & layout in canvas successfully
+      try {
+        await toPng(canvasRef.current, { cacheBust: true, pixelRatio: 3 });
+      } catch (e) {
+        console.warn("First paint warning (ignoring):", e);
+      }
+
       const dataUrl = await toPng(canvasRef.current, {
         cacheBust: true,
         pixelRatio: 3, // Premium 3x retina scale
@@ -260,6 +277,7 @@ export default function Workspace() {
       triggerToast("Post Design Exported!", "HIGH-RES PNG DOWNLOAD COMPLETE");
     } catch (error) {
       console.error("Export failed:", error);
+      triggerToast("Export Failed", "PLEASE TRY AGAIN OR UPDATE TEXT");
     } finally {
       setIsExporting(false);
     }
@@ -597,7 +615,7 @@ export default function Workspace() {
         {/* Centerpiece Content Workspace Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
                    {/* Left Panel: Markdown Writer (Inputs area) */}
-          <div className={`${gridCols.left} border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col p-4 sm:p-6 bg-[#060608]/50 gap-5 order-last lg:order-none transition-all duration-500 ease-in-out`}>
+          <div className={`${gridCols.left} border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col p-4 sm:p-6 bg-[#060608]/50 gap-5 order-first lg:order-none transition-all duration-500 ease-in-out`}>
             
             <div className="flex justify-between items-center pb-2 border-b border-white/10">
               <span className="font-mono text-[9px] text-obsidian-muted uppercase tracking-widest font-bold">
@@ -647,6 +665,8 @@ export default function Workspace() {
                 />
               </div>
             </div>
+ 
+
 
             {/* Main Textarea */}
             <div className="flex flex-col flex-grow gap-2">
@@ -696,7 +716,7 @@ export default function Workspace() {
           </div>
 
           {/* Right Panel: Immersive Live Preview Card Canvas */}
-          <div className={`${gridCols.right} p-4 sm:p-5 flex flex-col items-center justify-center bg-[#040406]/35 relative gap-4 order-first lg:order-none transition-all duration-500 ease-in-out`}>
+          <div className={`${gridCols.right} p-4 sm:p-5 flex flex-col items-center justify-center bg-[#040406]/35 relative gap-4 order-last lg:order-none transition-all duration-500 ease-in-out`}>
             
             {/* Soft backdrop glow to give three-dimensional float depth */}
             <div className="absolute inset-0 bg-gradient-to-tr from-obsidian-aiGlow to-obsidian-accentMuted/5 blur-3xl rounded-full opacity-40 pointer-events-none" />
@@ -769,10 +789,10 @@ export default function Workspace() {
                       </div>
                       <div>
                         <div className={`font-semibold text-xs tracking-tight ${currentTheme.usernameColor}`}>
-                          {username.replace('@', '').trim() || 'Creator'}
+                          {username.replace('@', '').trim() || 'alwayspriyesh'}
                         </div>
                         <div className={`text-[9px] font-mono tracking-wider ${currentTheme.metaColor}`}>
-                          {username.startsWith('@') ? username : `@${username}` || '@creator'}
+                          {username ? (username.startsWith('@') ? username : `@${username}`) : '@alwayspriyesh'}
                         </div>
                       </div>
                     </div>

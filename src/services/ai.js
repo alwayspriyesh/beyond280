@@ -74,23 +74,85 @@ export function parseStreamText(accumulatedText) {
 }
 
 /**
+ * Utility to check for gibberish/meaningless spam
+ */
+export function isGibberish(text) {
+  if (!text || !text.trim()) return false;
+  const trimmed = text.trim();
+
+  // 1. Common keyboard row patterns (e.g. "qwerty", "asdfgh")
+  const keyboardMashes = ["qwerty", "asdfgh", "zxcvbn", "qwert", "asdfg", "zxcvb"];
+  for (const mash of keyboardMashes) {
+    if (trimmed.toLowerCase().includes(mash)) {
+      return true;
+    }
+  }
+  
+  // 2. Repeated word patterns (e.g. "abc abc abc abc")
+  const words = trimmed.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length >= 3) {
+    const uniqueWords = new Set(words);
+    if (uniqueWords.size === 1) return true;
+    if (uniqueWords.size / words.length < 0.25 && words.length >= 4) return true;
+  }
+
+  // 2. Keystroke mashing or long word without any vowels
+  for (const word of words) {
+    if (word.length > 6) {
+      const hasVowels = /[aeiouy]/i.test(word);
+      if (!hasVowels) return true;
+      
+      const consecutiveConsonants = word.match(/[^aeiouy\s\d\W]{6,}/i);
+      if (consecutiveConsonants) return true;
+    }
+  }
+
+  // 3. Repeated single character strings (e.g. "aaaaa")
+  if (/(.)\1{5,}/.test(trimmed.replace(/\s+/g, ''))) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * High-fidelity local frontend humanize polisher (removes AI buzzwords, creates dynamic flow and human rhythm)
  */
-async function localFrontendHumanize(rawText, onChunk = null) {
+async function localFrontendHumanize(rawText, preset = "Natural", onChunk = null) {
   // Simulate minor local processing latency
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 800));
 
-  let humanized = rawText
-    .trim()
-    .replace(/\s+/g, ' ') // fix double spacing
-    .replace(/\b(delve into|delve)\b/gi, "go deep into")
-    .replace(/\b(elevate)\b/gi, "sharpen")
-    .replace(/\b(tapestry)\b/gi, "reality")
-    .replace(/\b(testament)\b/gi, "proof")
-    .replace(/\b(foster)\b/gi, "build")
-    .replace(/\b(synergy)\b/gi, "momentum")
+  const cleanedInput = rawText.trim().replace(/\s+/g, ' ');
+
+  // Intelligently handle gibberish
+  if (isGibberish(rawText)) {
+    const feedback = `[Editor's Note: This text looks a bit like keyboard testing or random spam. I've lightly cleaned the spacing, but there isn't enough context to humanize it. Feel free to try a natural sentence!]\n\n${cleanedInput}`;
+    if (onChunk) {
+      let currentText = "";
+      for (let i = 0; i < feedback.length; i += 3) {
+        currentText += feedback.substring(i, i + 3);
+        onChunk(currentText);
+        await new Promise((r) => setTimeout(r, 6));
+      }
+      onChunk(feedback);
+    }
+    return feedback;
+  }
+
+  // Base replacement dictionary for AI buzzwords and robotic structures
+  let baseHumanized = cleanedInput
+    .replace(/\b(delve into|delve)\b/gi, "explore")
+    .replace(/\belevate\b/gi, "sharpen")
+    .replace(/\btapestry\b/gi, "landscape")
+    .replace(/\btestament\b/gi, "proof")
+    .replace(/\bfoster\b/gi, "build")
+    .replace(/\bsynergy\b/gi, "flow")
     .replace(/\b(moreover|furthermore)\b/gi, "also")
-    .replace(/\b(unleash)\b/gi, "unlock")
+    .replace(/\bunleash\b/gi, "unlock")
+    .replace(/\bunlock the power of\b/gi, "make the most of")
+    .replace(/\bleverage cutting-edge\b/gi, "use simple, powerful")
+    .replace(/\bin today's fast-paced world\b/gi, "nowadays")
+    .replace(/\bit's important to note\b/gi, "remember")
     .replace(/\bi\b/g, 'I') // capitalize isolated i
     .replace(/(^|[.!?]\s+)([a-z])/g, (match, p1, p2) => p1 + p2.toUpperCase()) // capitalize start of sentences
     .replace(/\b(dont|cant|wont|isnt|arent|wasnt|werent|shouldnt|wouldnt|couldnt)\b/gi, (match) => {
@@ -101,23 +163,63 @@ async function localFrontendHumanize(rawText, onChunk = null) {
       return contractions[match.toLowerCase()] || match;
     });
 
-  // Ensure it has some organic sentence pacing and flows nicely
-  if (humanized.length > 0 && !/[.!?]$/.test(humanized)) {
-    humanized += '.';
+  if (baseHumanized.length > 0 && !/[.!?]$/.test(baseHumanized)) {
+    baseHumanized += '.';
+  }
+
+  let finalOutput = baseHumanized;
+
+  // Apply preset adjustments
+  if (preset === "Conversational") {
+    // Punchy, speech-like direct thoughts with warm opener
+    const conversationalOpeners = ["Honestly, ", "Look, ", "Let's be real—", "Here's the thing: "];
+    const opener = conversationalOpeners[Math.floor(Math.random() * conversationalOpeners.length)];
+    
+    // Softer, interactive pacing adjustments
+    let formattedText = baseHumanized;
+    if (!formattedText.startsWith("Honestly") && !formattedText.startsWith("Look") && !formattedText.startsWith("Let's") && !formattedText.startsWith("Here's")) {
+      formattedText = opener + baseHumanized.charAt(0).toLowerCase() + baseHumanized.slice(1);
+    }
+    
+    // Break up rigid sentence blocks with natural pacing
+    finalOutput = formattedText
+      .replace(/\. /g, ". So, ")
+      .replace(/And So, /g, "And ")
+      .replace(/, also /g, "—and ");
+      
+  } else if (preset === "Softer") {
+    // Empathetic transitions and gentle delivery
+    finalOutput = baseHumanized
+      .replace(/\b(you must|must|have to)\b/gi, "you might want to")
+      .replace(/\b(is the absolute key|is key|is critical)\b/gi, "really helps make it happen")
+      .replace(/\b(instantly|immediately)\b/gi, "gradually")
+      .replace(/\b(demands|requires)\b/gi, "invites")
+      .replace(/\b(guarantees|ensures)\b/gi, "encourages");
+      
+  } else if (preset === "Creator Style") {
+    // Visual digital authority with high rhythm and a strong signature hook closing
+    const creatorHooks = ["↳ Actions > plans.", "↳ Done is always better than perfect.", "↳ Build in public.", "↳ Less talking, more execution."];
+    const hook = creatorHooks[Math.floor(Math.random() * creatorHooks.length)];
+    
+    finalOutput = `${baseHumanized}\n\n${hook}`;
+    
+  } else if (preset === "Minimal Humanize") {
+    // Ultra-light touch: just basic replacements
+    finalOutput = baseHumanized;
   }
 
   // Stream simulation
   if (onChunk) {
     let currentText = "";
-    for (let i = 0; i < humanized.length; i += 3) {
-      currentText += humanized.substring(i, i + 3);
+    for (let i = 0; i < finalOutput.length; i += 3) {
+      currentText += finalOutput.substring(i, i + 3);
       onChunk(currentText);
       await new Promise((r) => setTimeout(r, 6));
     }
-    onChunk(humanized);
+    onChunk(finalOutput);
   }
 
-  return humanized;
+  return finalOutput;
 }
 
 /**
@@ -277,16 +379,16 @@ async function callStreamingEndpoint(endpointUrl, payload, onChunk) {
 /**
  * Humanizes text using `/api/ai/humanize` serverless route or fallback mock
  */
-export async function humanizeText(rawText, onChunk = null) {
+export async function humanizeText(rawText, preset = "Natural", onChunk = null) {
   if (!rawText.trim()) return "";
 
   if (FORCE_FRONTEND_AI) {
-    return localFrontendHumanize(rawText, onChunk);
+    return localFrontendHumanize(rawText, preset, onChunk);
   }
 
   try {
     let finalHumanizedText = "";
-    await callStreamingEndpoint("/api/ai/humanize", { text: rawText }, (streamedText) => {
+    await callStreamingEndpoint("/api/ai/humanize", { text: rawText, preset }, (streamedText) => {
       finalHumanizedText = streamedText;
       if (onChunk) onChunk(streamedText);
     });
@@ -294,7 +396,7 @@ export async function humanizeText(rawText, onChunk = null) {
     return finalHumanizedText;
   } catch (error) {
     console.error("Humanize API failure:", error);
-    return localFrontendHumanize(rawText, onChunk);
+    return localFrontendHumanize(rawText, preset, onChunk);
   }
 }
 
