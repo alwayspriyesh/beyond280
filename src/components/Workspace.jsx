@@ -78,7 +78,7 @@ const FONTS = {
 };
 
 
-const DEFAULT_TEXT = "Social content on X shouldn't be constrained by a simple character count. When you have deep, insights, condensing them into a raw tweet strips away their true authority.\n\nBeyond280 fixes this by instantly formatting, polishing, and packing your long thoughts into ultra-premium typographic cards that command visual space. Action breeds clarity.";
+const DEFAULT_TEXT = "Great ideas shouldn't be limited by a 280-character count. Condensing deep thoughts often strips away their value.\n\nBeyond280 solves this by instantly formatting your writing into premium typographic cards that stand out on any feed. Write without limits.";
 
 export default function Workspace() {
   const [text, setText] = useState(DEFAULT_TEXT);
@@ -313,22 +313,22 @@ export default function Workspace() {
   const getCardPadding = () => {
     const len = (activeContent?.body || text).length;
     if (len < 100) return 'p-4 sm:p-5 md:p-6';
-    if (len < 250) return 'p-5 sm:p-6 md:p-7';
-    return 'p-6 sm:p-7 md:p-8';
+    if (len < 250) return 'p-4.5 sm:p-6 md:p-7';
+    return 'p-5 sm:p-7 md:p-8';
   };
 
   // Dynamic body gap that scales with content
   const getBodyMargin = () => {
     const len = (activeContent?.body || text).length;
-    if (len < 100) return 'my-2.5 sm:my-3.5';
-    if (len < 250) return 'my-3 sm:my-4';
-    return 'my-4 sm:my-5';
+    if (len < 100) return 'my-2 sm:my-3.5';
+    if (len < 250) return 'my-2.5 sm:my-4';
+    return 'my-3 sm:my-5';
   };
 
   const getFontSizeClass = () => {
-    if (fontSize === 'small') return 'text-[13.5px] leading-relaxed';
-    if (fontSize === 'large') return 'text-[17.5px] leading-relaxed';
-    return 'text-[15.5px] leading-relaxed';
+    if (fontSize === 'small') return 'text-[12px] sm:text-[13.5px] leading-relaxed';
+    if (fontSize === 'large') return 'text-[15.5px] sm:text-[17.5px] leading-relaxed';
+    return 'text-[13.5px] sm:text-[15.5px] leading-relaxed';
   };
 
   // Extract initials from custom username handles
@@ -397,17 +397,17 @@ export default function Workspace() {
         <div 
           role="toolbar" 
           aria-label="Card Design Customization Toolbar" 
-          className="w-full border-b border-white/10 bg-[#0B0B0E]/60 p-3.5 sm:p-4 lg:p-0 flex flex-col lg:flex-row lg:items-center lg:justify-between select-none gap-3.5 lg:gap-0 lg:h-16 relative"
+          className="w-full border-b border-white/10 bg-[#0B0B0E]/60 p-3 sm:p-4 lg:p-0 flex flex-col lg:flex-row lg:items-center lg:justify-between select-none gap-3 lg:gap-0 lg:h-16 relative"
         >
           
-          {/* Left Styling Actions Group */}
-          <div className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center lg:items-center gap-3 lg:gap-2 xl:gap-3.5 w-full lg:w-auto lg:h-full lg:pl-3.5 xl:pl-4">
+          {/* Left Styling Actions Group - Compact grid layout on mobile, flex row on tablet/desktop */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center gap-2.5 lg:gap-2 xl:gap-3.5 w-full lg:w-auto lg:h-full lg:pl-3.5 xl:pl-4">
             
             {/* Highly Visible Aspect Ratio Selector (Unified in Toolbar) */}
             <div 
               role="group" 
               aria-label="Canvas Aspect Ratio" 
-              className="flex items-center gap-1.5 bg-[#0C0C10] border border-white/15 rounded-lg p-1 h-10 w-full sm:w-auto flex-shrink-0 justify-center"
+              className="flex items-center gap-1 bg-[#0C0C10] border border-white/15 rounded-lg p-1 h-11 sm:h-10 w-full sm:w-auto flex-shrink-0 justify-center col-span-1"
             >
               {['16:9', '4:3', '1:1'].map((ratio) => (
                 <button
@@ -415,7 +415,7 @@ export default function Workspace() {
                   onClick={() => setAspect(ratio)}
                   aria-label={`Set aspect ratio to ${ratio}`}
                   aria-pressed={aspect === ratio}
-                  className={`interactive-scale h-7 flex-grow sm:flex-grow-0 flex items-center justify-center px-3 sm:px-3.5 lg:px-2.5 xl:px-3.5 rounded-md font-mono text-[10px] font-extrabold transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
+                  className={`interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 flex items-center justify-center px-2.5 sm:px-3.5 rounded-md font-mono text-xs sm:text-[10px] font-extrabold transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
                     aspect === ratio 
                       ? 'bg-white text-obsidian-bg font-extrabold shadow-lg' 
                       : 'text-obsidian-muted hover:text-white'
@@ -427,13 +427,13 @@ export default function Workspace() {
             </div>
 
             {/* Custom Dropdown for Widescreen Desktops & Mobile Viewports (Unified Premium Selector) */}
-            <div className="relative w-full sm:w-[130px] xl:w-[150px] flex-shrink-0" ref={fontDropdownRef}>
+            <div className="relative w-full sm:w-[130px] xl:w-[150px] flex-shrink-0 col-span-1" ref={fontDropdownRef}>
               <button
                 onClick={() => setFontDropdownOpen(!fontDropdownOpen)}
                 aria-label={`Select Typography Font, currently ${FONTS[cardFont].name}`}
                 aria-haspopup="listbox"
                 aria-expanded={fontDropdownOpen}
-                className="w-full h-10 flex items-center justify-between px-3 bg-[#0C0C10] border border-white/15 rounded-lg text-white hover:border-[#E2C29B]/30 hover:bg-[#13131A] transition-all text-[10px] font-extrabold shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
+                className="w-full h-11 sm:h-10 flex items-center justify-between px-3 bg-[#0C0C10] border border-white/15 rounded-lg text-white hover:border-[#E2C29B]/30 hover:bg-[#13131A] transition-all text-xs sm:text-[10px] font-extrabold shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
               >
                 <span className="truncate text-obsidian-accent">{FONTS[cardFont].name}</span>
                 <ChevronDownIcon className="w-3.5 h-3.5 text-obsidian-muted transition-transform duration-200" style={{ transform: fontDropdownOpen ? 'rotate(180deg)' : 'none' }} />
@@ -459,7 +459,7 @@ export default function Workspace() {
                         }}
                         role="option"
                         aria-selected={cardFont === fontKey}
-                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left text-[10px] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
+                        className={`w-full flex items-center justify-between px-2.5 py-2 sm:py-1.5 rounded-lg text-left text-xs sm:text-[10px] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
                           cardFont === fontKey 
                             ? 'bg-obsidian-accentMuted text-[#E2C29B] font-extrabold' 
                             : 'text-obsidian-muted hover:text-white hover:bg-white/5'
@@ -480,24 +480,24 @@ export default function Workspace() {
             <div 
               role="group" 
               aria-label="Text Formatting and Layout Alignment" 
-              className="flex items-center justify-between sm:justify-start lg:justify-center gap-1.5 bg-[#0C0C10] border border-white/15 rounded-lg p-1 h-10 w-full sm:w-auto flex-shrink-0"
+              className="flex items-center justify-between sm:justify-start lg:justify-center gap-1.5 bg-[#0C0C10] border border-white/15 rounded-lg p-1 h-11 sm:h-10 w-full sm:w-auto flex-shrink-0 col-span-2"
             >
               <div className="flex items-center gap-1.5">
                 <button 
                   onClick={() => setAlign('left')}
                   aria-label="Align text left"
                   aria-pressed={align === 'left'}
-                  className={`interactive-scale h-7 w-7 flex items-center justify-center rounded-md transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${align === 'left' ? 'bg-white/15 text-white shadow-sm' : 'text-obsidian-muted hover:text-white'}`}
+                  className={`interactive-scale h-8.5 sm:h-8 w-8.5 sm:w-8 flex items-center justify-center rounded-md transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${align === 'left' ? 'bg-white/15 text-white shadow-sm' : 'text-obsidian-muted hover:text-white'}`}
                 >
-                  <AlignLeftIcon className="w-3.5 h-3.5" />
+                  <AlignLeftIcon className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 </button>
                 <button 
                   onClick={() => setAlign('center')}
                   aria-label="Align text center"
                   aria-pressed={align === 'center'}
-                  className={`interactive-scale h-7 w-7 flex items-center justify-center rounded-md transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${align === 'center' ? 'bg-white/15 text-white shadow-sm' : 'text-obsidian-muted hover:text-white'}`}
+                  className={`interactive-scale h-8.5 sm:h-8 w-8.5 sm:w-8 flex items-center justify-center rounded-md transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${align === 'center' ? 'bg-white/15 text-white shadow-sm' : 'text-obsidian-muted hover:text-white'}`}
                 >
-                  <AlignCenterIcon className="w-3.5 h-3.5" />
+                  <AlignCenterIcon className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
               
@@ -514,7 +514,7 @@ export default function Workspace() {
                     onClick={() => setFontSize(size)}
                     aria-label={`Set font size to ${size}`}
                     aria-pressed={fontSize === size}
-                    className={`interactive-scale h-7 flex-grow sm:flex-grow-0 px-3 lg:px-2.5 xl:px-3.5 flex items-center justify-center rounded text-[10px] uppercase font-extrabold tracking-wider transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
+                    className={`interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 px-3 sm:px-2.5 lg:px-2.5 xl:px-3.5 flex items-center justify-center rounded text-xs sm:text-[10px] uppercase font-extrabold tracking-wider transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 ${
                       fontSize === size ? 'bg-white/15 text-white shadow-sm' : 'text-obsidian-muted hover:text-white'
                     }`}
                   >
@@ -527,7 +527,7 @@ export default function Workspace() {
           </div>
 
           {/* Right Actions Group (AI Controls & Export Card) */}
-          <div className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center lg:items-center gap-3 lg:gap-2 xl:gap-3 w-full lg:w-auto lg:h-full lg:ml-auto lg:pr-3.5 xl:pr-4">
+          <div className="flex flex-col sm:flex-row lg:flex-row items-stretch sm:items-center lg:items-center gap-2.5 lg:gap-2 xl:gap-3 w-full lg:w-auto lg:h-full lg:ml-auto lg:pr-3.5 xl:pr-4">
             
             {!isReviewingHumanize ? (
               /* Standard Flow: Humanize and Export Card side-by-side on mobile, horizontal row on desktop */
@@ -536,7 +536,7 @@ export default function Workspace() {
                   onClick={handleHumanizeText}
                   disabled={isOptimizing}
                   aria-label="Humanize raw text using LLM"
-                  className="interactive-scale h-10 px-4 lg:px-3.5 xl:px-4 rounded-lg border bg-[#0C0C10] border-white/15 text-obsidian-muted hover:text-white hover:border-[#E2C29B]/30 flex items-center justify-center gap-2 font-extrabold text-[10px] uppercase tracking-wider transition-all w-full sm:w-auto flex-shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="interactive-scale h-11 sm:h-10 px-4 lg:px-3.5 xl:px-4 rounded-lg border bg-[#0C0C10] border-white/15 text-obsidian-muted hover:text-white hover:border-[#E2C29B]/30 flex items-center justify-center gap-2 font-extrabold text-xs sm:text-[10px] uppercase tracking-wider transition-all w-full sm:w-auto flex-shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>{isOptimizing ? 'Humanizing...' : 'Humanize'}</span>
                   <span className={`w-1.5 h-1.5 rounded-full ${isOptimizing ? 'bg-[#E2C29B] animate-ping' : 'bg-white/20'}`} aria-hidden="true"></span>
@@ -546,7 +546,7 @@ export default function Workspace() {
                   onClick={handleExportPNG}
                   disabled={isExporting}
                   aria-label="Export Custom Social Card Image as PNG"
-                  className="interactive-scale h-10 px-4.5 lg:px-3.5 xl:px-4.5 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-[#0D0D11] font-sans font-extrabold text-[10px] uppercase tracking-wider rounded-lg shadow-lg shadow-[#E2C29B]/5 flex items-center justify-center gap-2 w-full sm:w-auto flex-shrink-0 cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
+                  className="interactive-scale h-11 sm:h-10 px-4.5 lg:px-3.5 xl:px-4.5 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-[#0D0D11] font-sans font-extrabold text-xs sm:text-[10px] uppercase tracking-wider rounded-lg shadow-lg shadow-[#E2C29B]/5 flex items-center justify-center gap-2 w-full sm:w-auto flex-shrink-0 cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
                 >
                   <DownloadIcon className="w-3.5 h-3.5" />
                   <span>{isExporting ? 'Exporting...' : 'Export Card'}</span>
@@ -554,19 +554,19 @@ export default function Workspace() {
               </div>
             ) : (
               /* Review Active Flow: Review actions and Export Card stacked on mobile, row on desktop */
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-2.5 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 lg:gap-2.5 w-full sm:w-auto">
                 {/* Tactile Review Action Buttons */}
                 <div 
                   role="group" 
                   aria-label="Review AI Draft Actions" 
-                  className="flex items-center gap-1 bg-[#0C0C10] border border-[#E2C29B]/35 rounded-lg p-1 h-10 w-full sm:w-auto justify-between sm:justify-center flex-shrink-0 shadow-md shadow-[#E2C29B]/5 transition-all duration-300"
+                  className="flex items-center gap-1 bg-[#0C0C10] border border-[#E2C29B]/35 rounded-lg p-1 h-11 sm:h-10 w-full sm:w-auto justify-between sm:justify-center flex-shrink-0 shadow-md shadow-[#E2C29B]/5 transition-all duration-300"
                 >
                   <button
                     onClick={handleKeepOriginal}
                     disabled={isStreaming || isOptimizing}
                     title="Discard humanized draft and revert to original text"
                     aria-label="Discard draft and keep original"
-                    className="interactive-scale h-7 flex-grow sm:flex-grow-0 px-3 lg:px-2 xl:px-3 flex items-center justify-center rounded-md font-sans font-bold text-[10px] uppercase tracking-wider transition-all gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 text-white/70 hover:text-white bg-white/5 hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 px-3 sm:px-2 lg:px-2 xl:px-3 flex items-center justify-center rounded-md font-sans font-bold text-xs sm:text-[10px] uppercase tracking-wider transition-all gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 text-white/70 hover:text-white bg-white/5 hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <RotateCcwIcon className="w-2.5 h-2.5" />
                     <span>Original</span>
@@ -577,7 +577,7 @@ export default function Workspace() {
                     disabled={isStreaming || isOptimizing}
                     title="Generate another humanized draft variation"
                     aria-label="Regenerate another humanized draft"
-                    className="interactive-scale h-7 flex-grow sm:flex-grow-0 px-3 lg:px-2 xl:px-3 flex items-center justify-center rounded-md font-sans font-bold text-[10px] uppercase tracking-wider transition-all gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 text-[#E2C29B] border border-[#E2C29B]/25 hover:border-[#E2C29B]/50 hover:bg-[#E2C29B]/5 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 px-3 sm:px-2 lg:px-2 xl:px-3 flex items-center justify-center rounded-md font-sans font-bold text-xs sm:text-[10px] uppercase tracking-wider transition-all gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 text-[#E2C29B] border border-[#E2C29B]/25 hover:border-[#E2C29B]/50 hover:bg-[#E2C29B]/5 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <WandIcon className={`w-2.5 h-2.5 ${isStreaming ? 'animate-spin' : ''}`} />
                     <span>Regen</span>
@@ -588,7 +588,7 @@ export default function Workspace() {
                     disabled={isStreaming || isOptimizing}
                     title="Apply humanized draft back to Writing Studio input editor"
                     aria-label="Keep humanized text and update editor input"
-                    className="interactive-scale h-7 flex-grow sm:flex-grow-0 px-3.5 lg:px-2.5 xl:px-3.5 flex items-center justify-center rounded-md font-sans font-extrabold text-[10px] uppercase tracking-wider transition-all gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-[#0D0D11] active:scale-95 shadow-md shadow-black/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="interactive-scale h-8.5 sm:h-8 flex-grow sm:flex-grow-0 px-3.5 sm:px-2.5 lg:px-2.5 xl:px-3.5 flex items-center justify-center rounded-md font-sans font-extrabold text-xs sm:text-[10px] uppercase tracking-wider transition-all gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-[#0D0D11] active:scale-95 shadow-md shadow-black/10 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <CheckCircleIcon className="w-2.5 h-2.5" />
                     <span>Keep</span>
@@ -600,7 +600,7 @@ export default function Workspace() {
                   onClick={handleExportPNG}
                   disabled={isExporting}
                   aria-label="Export Custom Social Card Image as PNG"
-                  className="interactive-scale h-10 px-4.5 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-[#0D0D11] font-sans font-extrabold text-[10px] uppercase tracking-wider rounded-lg shadow-lg shadow-[#E2C29B]/5 flex items-center justify-center gap-2 w-full sm:w-auto flex-shrink-0 cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
+                  className="interactive-scale h-11 sm:h-10 px-4.5 bg-gradient-to-r from-[#E2C29B] to-[#C49B74] hover:brightness-110 text-[#0D0D11] font-sans font-extrabold text-xs sm:text-[10px] uppercase tracking-wider rounded-lg shadow-lg shadow-[#E2C29B]/5 flex items-center justify-center gap-2 w-full sm:w-auto flex-shrink-0 cursor-pointer transition-all duration-200 focus-visible:ring-2 focus-visible:ring-obsidian-accent/70"
                 >
                   <DownloadIcon className="w-3.5 h-3.5" />
                   <span>{isExporting ? 'Exporting...' : 'Export Card'}</span>
@@ -615,10 +615,10 @@ export default function Workspace() {
         {/* Centerpiece Content Workspace Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
                    {/* Left Panel: Markdown Writer (Inputs area) */}
-          <div className={`${gridCols.left} border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col p-4 sm:p-6 bg-[#060608]/50 gap-5 order-first lg:order-none transition-all duration-500 ease-in-out`}>
+          <div className={`${gridCols.left} border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col p-3.5 sm:p-6 bg-[#060608]/50 gap-3.5 sm:gap-5 order-first lg:order-none transition-all duration-500 ease-in-out`}>
             
             <div className="flex justify-between items-center pb-2 border-b border-white/10">
-              <span className="font-mono text-[9px] text-obsidian-muted uppercase tracking-widest font-bold">
+              <span className="font-mono text-[10px] text-obsidian-muted uppercase tracking-widest font-bold">
                 WRITING STUDIO
               </span>
               <button 
@@ -627,15 +627,15 @@ export default function Workspace() {
                 className="interactive-scale flex items-center gap-1.5 text-obsidian-muted hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-obsidian-accent/70 rounded px-1.5 py-0.5 cursor-pointer"
               >
                 <RotateCcwIcon className="w-3 h-3" />
-                <span className="font-mono text-[8px] uppercase tracking-wider">Reset</span>
+                <span className="font-mono text-[9px] uppercase tracking-wider">Reset</span>
               </button>
             </div>
 
-            {/* Custom Handle and Headline in a gorgeous, balanced 2-column grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Custom Handle and Headline side-by-side on mobile */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
               {/* Handle */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="writer-handle" className="font-mono text-[9px] text-[#C4C4D6] uppercase tracking-widest font-extrabold">
+                <label htmlFor="writer-handle" className="font-mono text-[10px] text-[#C4C4D6] uppercase tracking-widest font-extrabold">
                   Handle
                 </label>
                 <input
@@ -645,14 +645,14 @@ export default function Workspace() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="@creator"
                   aria-label="Creator Handle"
-                  className="w-full bg-[#09090C]/60 border border-white/15 focus-visible:border-[#E2C29B]/70 focus-visible:ring-2 focus-visible:ring-[#E2C29B]/20 rounded-xl px-4 py-2.5 font-mono text-base lg:text-[14px] text-white focus:outline-none placeholder:text-white/20 transition-all duration-300"
+                  className="w-full bg-[#09090C]/60 border border-white/15 focus-visible:border-[#E2C29B]/70 focus-visible:ring-2 focus-visible:ring-[#E2C29B]/20 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 font-mono text-[13px] sm:text-sm lg:text-[14px] text-white focus:outline-none placeholder:text-white/20 transition-all duration-300"
                 />
               </div>
 
               {/* Headline */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="writer-headline" className="font-mono text-[9px] text-[#C4C4D6] uppercase tracking-widest font-extrabold">
-                  Headline <span className="text-[8px] text-white/40 lowercase">(optional)</span>
+                <label htmlFor="writer-headline" className="font-mono text-[10px] text-[#C4C4D6] uppercase tracking-widest font-extrabold">
+                  Headline <span className="text-[9px] text-white/40 lowercase">(optional)</span>
                 </label>
                 <input
                   id="writer-headline"
@@ -661,7 +661,7 @@ export default function Workspace() {
                   onChange={(e) => setHeadline(e.target.value)}
                   placeholder="Enter card title..."
                   aria-label="Card Headline Input (Optional)"
-                  className="w-full bg-[#09090C]/60 border border-white/15 focus-visible:border-[#E2C29B]/70 focus-visible:ring-2 focus-visible:ring-[#E2C29B]/20 rounded-xl px-4 py-2.5 font-mono text-base lg:text-[14px] text-white focus:outline-none placeholder:text-white/20 transition-all duration-300"
+                  className="w-full bg-[#09090C]/60 border border-white/15 focus-visible:border-[#E2C29B]/70 focus-visible:ring-2 focus-visible:ring-[#E2C29B]/20 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 font-mono text-[13px] sm:text-sm lg:text-[14px] text-white focus:outline-none placeholder:text-white/20 transition-all duration-300"
                 />
               </div>
             </div>
@@ -670,7 +670,7 @@ export default function Workspace() {
 
             {/* Main Textarea */}
             <div className="flex flex-col flex-grow gap-2">
-              <label htmlFor="writer-body" className="font-mono text-[9px] text-[#C4C4D6] uppercase tracking-widest font-extrabold">
+              <label htmlFor="writer-body" className="font-mono text-[10px] text-[#C4C4D6] uppercase tracking-widest font-extrabold">
                 Body
               </label>
               <div className="relative flex-grow flex flex-col">
@@ -681,11 +681,11 @@ export default function Workspace() {
                   disabled={isOptimizing}
                   placeholder="Write your long thoughts here..."
                   aria-label="Social Card Body Content Input"
-                  className="w-full flex-grow bg-[#09090C]/40 border border-white/15 focus-visible:border-[#E2C29B]/60 focus-visible:ring-2 focus-visible:ring-[#E2C29B]/20 rounded-xl p-4 font-mono text-base lg:text-[14px] leading-relaxed text-white/90 focus:outline-none resize-none min-h-[180px] lg:min-h-[280px] transition-all duration-300"
+                  className="w-full flex-grow bg-[#09090C]/40 border border-white/15 focus-visible:border-[#E2C29B]/60 focus-visible:ring-2 focus-visible:ring-[#E2C29B]/20 rounded-xl p-3.5 sm:p-4 font-mono text-[13px] sm:text-sm lg:text-[14px] leading-relaxed text-white/90 focus:outline-none resize-none min-h-[210px] sm:min-h-[240px] lg:min-h-[280px] transition-all duration-300"
                 />
                 
                 {/* Character counting bar */}
-                <div className="flex justify-between items-center pt-2.5 mt-1 text-[9px] font-mono text-obsidian-muted border-t border-white/10">
+                <div className="flex justify-between items-center pt-2.5 mt-1 text-[10px] font-mono text-obsidian-muted border-t border-white/10">
                   <span className="flex items-center gap-1.5">
                     <span className={`w-1.5 h-1.5 rounded-full ${isOverflowing ? 'bg-obsidian-accent' : 'bg-white/20'}`} aria-hidden="true"></span>
                     {isOverflowing ? 'OVER 280 CHARACTER LIMIT' : 'STANDARD SINGLE POST'}
@@ -716,7 +716,7 @@ export default function Workspace() {
           </div>
 
           {/* Right Panel: Immersive Live Preview Card Canvas */}
-          <div className={`${gridCols.right} p-4 sm:p-5 flex flex-col items-center justify-center bg-[#040406]/35 relative gap-4 order-last lg:order-none transition-all duration-500 ease-in-out`}>
+          <div className={`${gridCols.right} p-3.5 sm:p-5 flex flex-col items-center justify-center bg-[#040406]/35 relative gap-3.5 sm:gap-4 order-last lg:order-none transition-all duration-500 ease-in-out`}>
             
             {/* Soft backdrop glow to give three-dimensional float depth */}
             <div className="absolute inset-0 bg-gradient-to-tr from-obsidian-aiGlow to-obsidian-accentMuted/5 blur-3xl rounded-full opacity-40 pointer-events-none" />
@@ -728,10 +728,10 @@ export default function Workspace() {
 
               {/* Theme Preset Selector Button Row (Symmetric to Left Inputs Row) */}
               <div className="w-full flex flex-col gap-1.5 shrink-0">
-                <span className="text-obsidian-muted font-mono text-[9px] uppercase tracking-widest font-extrabold flex items-center gap-1">
+                <span className="text-obsidian-muted font-mono text-[10px] uppercase tracking-widest font-extrabold flex items-center gap-1.5">
                   <PaletteIcon className="w-3.5 h-3.5" /> Preset Theme
                 </span>
-                <div className="flex flex-wrap gap-1.5 w-full">
+                <div className="grid grid-cols-4 gap-1.5 w-full">
                   {Object.keys(PRESETS).map((key) => {
                     // Aesthetic color dots for previewing the theme at a single glance
                     const dots = {
@@ -745,14 +745,14 @@ export default function Workspace() {
                       <button
                         key={key}
                         onClick={() => setTheme(key)}
-                        className={`interactive-scale flex-grow flex-shrink basis-[calc(50%-4px)] sm:basis-0 px-3 py-2 sm:py-2.5 rounded-lg border text-center font-extrabold transition-all duration-200 text-[10px] flex flex-col items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`interactive-scale flex-grow px-2 py-2 rounded-lg border text-center font-extrabold transition-all duration-200 text-[10px] sm:text-xs flex flex-col items-center justify-center gap-1 cursor-pointer ${
                           theme === key 
                             ? 'bg-obsidian-accentMuted border-[#E2C29B] text-white shadow-md' 
                             : 'bg-[#0C0C10] border-white/10 text-[#C4C4D6] hover:border-white/20 hover:text-white'
                         }`}
                       >
-                        <span>{PRESETS[key].name.split(' ')[0]}</span>
-                        <div className="flex gap-1 items-center" aria-hidden="true">
+                        <span className="truncate w-full text-[10px] sm:text-xs">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                        <div className="flex gap-1 items-center justify-center" aria-hidden="true">
                           {dots.map((color, idx) => (
                             <span 
                               key={idx} 
@@ -802,7 +802,7 @@ export default function Workspace() {
                   <div className={`flex-grow flex flex-col justify-center ${getBodyMargin()} ${align === 'center' ? 'text-center' : 'text-left'}`}>
                     <div className="flex flex-col gap-3">
                       {activeContent.headline && (
-                        <h3 className={`font-bold text-[18.5px] leading-snug tracking-tight ${currentTheme.titleColor} ${isStreaming && aiMode !== 'humanize' ? 'animate-pulse' : ''}`}>
+                        <h3 className={`font-bold text-[15px] sm:text-[18.5px] leading-snug tracking-tight ${currentTheme.titleColor} ${isStreaming && aiMode !== 'humanize' ? 'animate-pulse' : ''}`}>
                           {activeContent.headline}
                         </h3>
                       )}
@@ -822,7 +822,7 @@ export default function Workspace() {
 
 
               {/* Understated Analytics stats panel inside right layout */}
-              <div className="w-full flex justify-between items-center px-3 sm:px-4 font-mono text-[9px] text-[#C4C4D6] bg-[#08080A]/60 border border-white/10 rounded-xl py-2.5 shadow-sm gap-2">
+              <div className="w-full flex justify-between items-center px-3 sm:px-4 font-mono text-[10px] text-[#C4C4D6] bg-[#08080A]/60 border border-white/10 rounded-xl py-2 shadow-sm gap-2">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-obsidian-accent shrink-0"></span>
                   <span className="hidden sm:inline">Reading time:</span> 
