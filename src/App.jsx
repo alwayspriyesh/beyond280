@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import Header from './components/Header';
 import Workspace from './components/Workspace';
-import ProductSections from './components/ProductSections';
-import GrainNoise from './components/GrainNoise';
+
+const ProductSections = lazy(() => import('./components/ProductSections'));
+const GrainNoise = lazy(() => import('./components/GrainNoise'));
 
 export default function App() {
   // Smooth scroll and focus helper to transition to studio mode directly
@@ -20,7 +21,9 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-obsidian-bg w-full overflow-x-hidden">
       {/* Subtle, physical paper grain SVG overlay */}
-      <GrainNoise />
+      <Suspense fallback={null}>
+        <GrainNoise />
+      </Suspense>
 
       {/* Top navigation header */}
       <Header onFocusWorkspace={handleFocusWorkspace} />
@@ -37,7 +40,9 @@ export default function App() {
         </div>
 
         {/* Story, Content Sections & Follow CTA */}
-        <ProductSections onFocusWorkspace={handleFocusWorkspace} />
+        <Suspense fallback={<div className="min-h-[200px] flex items-center justify-center text-xs text-obsidian-muted font-mono">✦ LOADING CREATOR SUITE...</div>}>
+          <ProductSections onFocusWorkspace={handleFocusWorkspace} />
+        </Suspense>
 
         {/* Personal, Understated Footer */}
         <footer className="border-t border-white/5 pt-8 mt-8 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 font-sans text-xs text-obsidian-muted">
